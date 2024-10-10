@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   renderHistory();
   fetchCountries();
 
+  // Фільтр днів
+  document
+    .getElementById("dayFilter")
+    .addEventListener("change", filterHolidays);
+
   // Додаємо слухачі подій для кнопок та полів вибору
   document.getElementById("startDate").addEventListener("input", validateDates);
   document.getElementById("endDate").addEventListener("input", validateDates);
@@ -195,6 +200,23 @@ function enableYearSelect() {
   }
 
   yearSelect.value = currentYear;
+}
+
+function filterHolidays() {
+  const filterOption = document.getElementById("dayFilter").value;
+  const holidayRows = document.querySelectorAll("#holidayTable tbody tr");
+
+  holidayRows.forEach((row) => {
+    const dateText = row.cells[0].textContent;
+    const date = new Date(dateText);
+    const day = date.getDay();
+
+    const isVisible =
+      (filterOption === "weekdays" && day !== 0 && day !== 6) ||
+      (filterOption === "weekends" && (day === 0 || day === 6));
+
+    row.style.display = isVisible ? "" : "none";
+  });
 }
 
 // Функція для отримання свят
