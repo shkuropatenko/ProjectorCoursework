@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Дата та Свята</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="tabs">
+      <button class="tab-button" data-tab="tab1">Обчислення між датами</button>
+      <button class="tab-button" data-tab="tab2">Список свят</button>
+    </div>
+
+    <div id="tab1" class="tab-content" style="display: none">
+      <h2>Обчислення між датами</h2>
+      <input type="date" id="startDate" />
+      <input type="date" id="endDate" disabled />
+      <button id="weekPreset">Тиждень</button>
+      <button id="monthPreset">Місяць</button>
+
+      <select id="countOption">
+        <option value="days">Порахувати кількість днів</option>
+        <option value="hours">Порахувати кількість годин</option>
+        <option value="minutes">Порахувати кількість хвилин</option>
+        <option value="seconds">Порахувати кількість секунд</option>
+      </select>
+
+      <button id="calculateBtn">Порахувати</button>
+
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Стартова дата</th>
+            <th>Кінцева дата</th>
+            <th>Результат</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="tab2" class="tab-content" style="display: none">
+      <h2>Список свят</h2>
+      <select id="countrySelect">
+        <option value="">Оберіть країну</option>
+      </select>
+      <select id="yearSelect" disabled>
+        <option value="">Оберіть рік</option>
+      </select>
+      <button id="fetchHolidaysBtn">Отримати свята</button>
+
+      <table id="holidayTable">
+        <thead>
+          <tr>
+            <th id="sortDateBtn">Дата</th>
+            <th>Назва свята</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
