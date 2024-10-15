@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("calculateBtn")
     .addEventListener("click", calculateDateDifference);
 
-  // Обробка вибору країни та року'
+  // Обробка вибору країни та року
   document
     .getElementById("countrySelect")
     .addEventListener("change", enableYearSelect);
@@ -52,24 +52,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Відкриваємо першу вкладку за замовчуванням
-  tabButtons[0].click();
+  if (tabButtons.length > 0) {
+    tabButtons[0].click();
+  }
 });
 
 // Функція для відкриття вкладки
 function openTab(event, tabName) {
-  // Скрыть все вкладки
   const tabContents = document.querySelectorAll(".tab-content");
   tabContents.forEach((tab) => {
     tab.style.display = "none";
   });
 
-  // Убрать активный класс з усіх кнопок
   const tabButtons = document.querySelectorAll(".tab-button");
   tabButtons.forEach((button) => {
     button.classList.remove("active");
   });
 
-  // Показати вибрану вкладку
   document.getElementById(tabName).style.display = "block";
   event.currentTarget.classList.add("active");
 }
@@ -88,7 +87,7 @@ function validateDates() {
   }
 }
 
-// встановлення пресетів
+// Встановлення пресетів
 function setPreset(preset) {
   const startDate = new Date();
   const endDate = new Date(startDate);
@@ -107,7 +106,7 @@ function setPreset(preset) {
     .split("T")[0];
 }
 
-// обчислення різниці між датами
+// Обчислення різниці між датами
 function calculateDateDifference() {
   const startDate = new Date(document.getElementById("startDate").value);
   const endDate = new Date(document.getElementById("endDate").value);
@@ -130,6 +129,8 @@ function calculateDateDifference() {
       case "seconds":
         result = Math.ceil(diffTime / 1000);
         break;
+      default:
+        result = diffTime;
     }
 
     saveToHistory(startDate, endDate, result);
@@ -139,7 +140,7 @@ function calculateDateDifference() {
   }
 }
 
-// збереження історії обчислень
+// Збереження історії обчислень
 function saveToHistory(startDate, endDate, result) {
   const history = JSON.parse(localStorage.getItem("history")) || [];
   history.unshift({ startDate, endDate, result });
@@ -180,6 +181,7 @@ function fetchCountries() {
       });
     })
     .catch((error) => {
+      console.log(error);
       showError("Не вдалося отримати список країн.");
     });
 }
@@ -202,6 +204,7 @@ function enableYearSelect() {
   yearSelect.value = currentYear;
 }
 
+// Фільтрація свят за типом днів
 function filterHolidays() {
   const filterOption = document.getElementById("dayFilter").value;
   const holidayRows = document.querySelectorAll("#holidayTable tbody tr");
@@ -209,11 +212,15 @@ function filterHolidays() {
   holidayRows.forEach((row) => {
     const dateText = row.cells[0].textContent;
     const date = new Date(dateText);
-    const day = date.getDay();
+    const day = date.getDay(); // 0 - неділя, 6 - субота
 
-    const isVisible =
-      (filterOption === "weekdays" && day !== 0 && day !== 6) ||
-      (filterOption === "weekends" && (day === 0 || day === 6));
+    let isVisible = true;
+    if (filterOption === "weekdays") {
+      isVisible = day !== 0 && day !== 6;
+    } else if (filterOption === "weekends") {
+      isVisible = day === 0 || day === 6;
+    }
+    // Якщо filterOption === "all", залишаємо isVisible = true
 
     row.style.display = isVisible ? "" : "none";
   });
@@ -245,8 +252,12 @@ function fetchHolidays() {
            <td>${holiday.name}</td>`;
         holidayTableBody.appendChild(row);
       });
+
+      // Застосовуємо фільтр після завантаження свят
+      filterHolidays();
     })
     .catch((error) => {
+      console.log(error);
       showError("Не вдалося отримати свята.");
     });
 }
@@ -267,6 +278,9 @@ function sortHolidays() {
   holidayTableBody.innerHTML = "";
   rows.forEach((row) => holidayTableBody.appendChild(row));
   holidayTableBody.dataset.sortOrder = isAscending ? "asc" : "desc";
+
+  // Застосовуємо фільтр після сортування
+  filterHolidays();
 }
 
 // Функція для відображення повідомлення про помилку
